@@ -1,0 +1,65 @@
+ce fichier contient les etapes pour crée un projet django
+
+1/ crée un nouveau projet django sur pycharm
+2/ faire pip list : on obtient
+        Package  Version
+        -------- -------
+        asgiref  3.7.2
+        Django   5.0.1
+        pip      23.2.1
+        sqlparse 0.4.4
+        tzdata   2023.4
+
+3/ installer les dependences
+        pip install django-cors-headers djangorestframework pytz setuptools
+
+4/ afficher les dependeces presentes avec : pip list
+        Package             Version
+        ------------------- ------------
+        asgiref             3.7.2
+        Django              5.0.1
+        django-cors-headers 4.3.1
+        pytz                2023.3.post1
+        setuptools          69.0.3
+        sqlparse            0.4.4
+        tzdata              2023.4
+
+5/ Créer le fichier : requirements.txt
+         pip freeze > requirements.txt
+
+6/ installer les dépendences pour ce porjet avec:
+        pip install -r requirements.txt
+
+7/ créer un package avec django-admin nommé core
+        django-admin startapp core
+
+8/ lancer le projet avec ** run de pycharm ** ou bien en ligne de commande
+        python manage.py runserver
+
+9/ ajouter dans ** backendDjangoCrud > settings.py > INSTALLED_APPS ** ces lignes
+        'core',
+        'rest_framework',
+        'corsheaders'
+
+10/ ajouter dans ** backendDjangoCrud > settings.py > MIDDLEWARE ** cette ligne
+        'corsheaders.middleware.CorsMiddleware',
+
+11/ ajouter dans ** backendDjangoCrud > settings.py  ** cette ligne
+        CROSS_ORIGIN_ALLOW_ALL = True
+
+12/ Lancer run l'application
+        // si tout va bien on n'aura pas d'erreur
+                Django version 5.0.1, using settings 'backendDjangoCrud.settings'
+                Starting development server at http://localhost:8000/
+                Quit the server with CTRL-BREAK.
+
+                [12/Jan/2024 17:02:09] "GET / HTTP/1.1" 200 10629
+
+13/ garantir que la base de données est à jour avec le dernier état défini par les migrations de l'application Django
+        python manage.py migrate
+
+14/ Créer le fichier urls.py dans core
+
+15/ Créer le fichier views dans core
+
+16/ lancer l'api et tester avec un url
