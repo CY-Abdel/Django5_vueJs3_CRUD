@@ -25,10 +25,10 @@
               <td>{{ student.genre }}</td>
               <td>
                 <a href="#" class="edit" title="">
-                  <button class="btn btn-warning btn-sm me-2">Edit</button>
+                  <button class="btn btn-warning btn-sm me-2" @click="editBtn(student.id)">Edit</button>
                 </a>
                 <a href="#" class="edit ml-1" title="">
-                  <button class="btn btn-danger btn-sm">Delete</button>
+                  <button class="btn btn-danger btn-sm"  @click="deleteStudent(student.id)">Delete</button>
                 </a>
               </td>
             </tr>
@@ -40,20 +40,23 @@
 
         <!-- There is a current student to be edited -->
         <div v-if="Object.keys(currentStudent).length !== 0">
+
           <h2 class="alert alert-warning">Editer un Etudiant</h2>
-          <form>
+          
+          <form @submit.prevent="updateStudent(currentStudent.id)">
             <div class="row">
               <div class="col">
                 <div class="form-group">
                   <label class="form-label float-start">Nom</label>
-                  <input type="text" class="form-control">
+                  <input type="text" class="form-control" v-model="currentStudent.nom">
                 </div>
               </div>
 
               <div class="col">
                 <div class="form-group">
                   <label class="form-label float-start">Email</label>
-                  <input type="email" class="form-control">
+                  <input type="email" class="form-control"
+                  v-model="currentStudent.email">
                 </div>
               </div>
             </div>
@@ -62,14 +65,15 @@
               <div class="col">
                 <div class="form-group">
                   <label class="form-label float-start">Cours</label>
-                  <input type="text" class="form-control">
+                  <input type="text" class="form-control" v-model="currentStudent.cours">
                 </div>
               </div>
               <div class="col">
 
                 <div class="form-group">
                   <label class="form-label float-start">Genre</label>
-                  <input type="text" class="form-control">
+                  <input type="text" class="form-control"
+                  v-model="currentStudent.genre">
                 </div>
               </div>
 
@@ -80,7 +84,9 @@
 
         <!-- There is no current student to be edited -->
         <div v-else>
+          
           <h2 class="alert alert-info">Ajouter un Etudiant</h2>
+
           <form @submit.prevent="saveStudent()">
             <div class="row">
               <div class="col">
@@ -165,30 +171,18 @@ export default {
 import { ref, onMounted, onBeforeMount, reactive } from 'vue';
 import axios from 'axios';
 
-
-
-// const student = ref({
-//   nom: '',
-//   cours: '',
-//   email: '',
-//   genre: ''
-// });
-
-const defaultStudent = {
+const student = ref({
   nom: '',
   cours: '',
   email: '',
-  genre: '',
-  // ... d'autres champs
-};
-
-// Créez une référence réactive avec les valeurs par défaut
-const student = ref(reactive({ ...defaultStudent }));
+  genre: ''
+});
 
 // ref == l'equivalent de useState dans react
 const students = ref([]);
 const api = 'http://127.0.0.1:8000/api';
 
+// Créez une référence réactive pour currentStudent
 const currentStudent = ref({});
 
 const getStudents = () => {
@@ -211,15 +205,55 @@ const saveStudent = () => {
         console.log(response.data);
         getStudents()
         // Réinitialisez tous les champs de l'objet student
-        student.value = { ...defaultStudent };
+        student.value = {};
       }
     ).catch(error => {
       console.log(error);
     })
-}
+};
+
+const editBtn = (id) => {
+  const foundStudent = students.value.find(student => student.id === id);
+
+  if (foundStudent) {
+    console.log(foundStudent.nom);
+
+    // Mettez à jour les propriétés de currentStudent
+    currentStudent.value = { ...foundStudent };
+
+    // currentStudent = { 'id': foundStudent.id, 'nom': foundStudent.nom, 'cours': foundStudent.cours, 'email': foundStudent.email, 'genre': foundStudent.genre }
+  }
+};
+
+const updateStudent = (id) => {
+  axios.put(api + `/students/${id}/`, currentStudent.value)
+    .then(
+      response => {
+        console.log(response.data);
+        getStudents()
+        // Réinitialisez tous les champs de l'objet student
+        currentStudent.value = {};
+      }
+    ).catch(error => {
+      console.log(error);
+    })
+};
+
+const deleteStudent = (id) => {
+  axios.delete(api + `/students/${id}/`)
+    .then(
+      response => {
+        console.log(response.data);
+        getStudents()
+      }
+    ).catch(error => {
+      console.log(error);
+    })
+};
 
 onMounted(() => {
   console.log("Le DOM est monté");
+  console.log(Object.keys(currentStudent.value).length);
 });
 
 onBeforeMount(() => {
