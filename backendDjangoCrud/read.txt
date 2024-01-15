@@ -63,3 +63,16 @@ ce fichier contient les etapes pour crée un projet django
 15/ Créer le fichier views dans core
 
 16/ lancer l'api et tester avec un url
+
+17/ créer les routes urls
+
+18/ creer le models ex students
+
+19/ executer les commandes makemigration + migrate
+        python manage.py makemigrations
+    et
+        python manage.py migrate
+    et
+        python manage.py runserver
+
+
