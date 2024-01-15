@@ -17,7 +17,7 @@ from rest_framework import viewsets
 Définit une classe StudentViewSet qui hérite de viewsets.ModelViewSet. Cela signifie que cette classe est un viewset qui prend en charge les opérations CRUD pour le modèle Student.
 """
 class StudentViewSet(viewsets.ModelViewSet):
-    queryset = Student.objects.all() #getAllStudents
+    queryset = Student.objects.all()
 
     # Définit l'attribut serializer_class du viewset. Il spécifie la classe de sérialiseur à utiliser pour convertir les objets Student en représentations JSON et vice versa
     serializer_class = StudentSerializer

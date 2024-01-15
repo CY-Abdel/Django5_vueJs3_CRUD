@@ -18,7 +18,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="student in students" :key="student.id" >
+            <tr v-for="student in students" :key="student.id">
               <td>{{ student.nom }}</td>
               <td>{{ student.cours }}</td>
               <td>{{ student.email }}</td>
@@ -37,8 +37,9 @@
       </div>
 
       <div class="col-md-5 addEdit">
+
         <!-- There is a current student to be edited -->
-        <div >
+        <div v-if="Object.keys(currentStudent).length !== 0">
           <h2 class="alert alert-warning">Editer un Etudiant</h2>
           <form>
             <div class="row">
@@ -78,21 +79,24 @@
         </div>
 
         <!-- There is no current student to be edited -->
-        <div class="">
+        <div v-else>
           <h2 class="alert alert-info">Ajouter un Etudiant</h2>
-          <form>
+          <form @submit.prevent="saveStudent()">
             <div class="row">
               <div class="col">
                 <div class="form-group">
                   <label class="form-label float-start">Nom</label>
-                  <input type="text" class="form-control">
+                  <!-- 
+                    v-model est une directive dans Vue.js qui permet de créer une liaison bidirectionnelle entre un champ de formulaire HTML (comme un <input>, <textarea>, ou <select>) et une propriété dans le modèle de données Vue
+                   -->
+                  <input type="text" class="form-control" v-model="student.nom">
                 </div>
               </div>
 
               <div class="col">
-                <div class="form-group">
+                <div class="form-gro up">
                   <label class="form-label float-start">Email</label>
-                  <input type="email" class="form-control">
+                  <input type="email" class="form-control" v-model="student.email">
                 </div>
               </div>
             </div>
@@ -101,13 +105,13 @@
               <div class="col">
                 <div class="form-group">
                   <label class="form-label float-start">Cours</label>
-                  <input type="text" class="form-control">
+                  <input type="text" class="form-control" v-model="student.cours">
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label class="form-label float-start">Genre</label>
-                  <input type="text" class="form-control">
+                  <input type="text" class="form-control" v-model="student.genre">
                 </div>
               </div>
 
@@ -158,22 +162,38 @@ export default {
 
 // version vueJS 3.2 et +
 <script setup>
-import { ref, onMounted, onBeforeMount } from 'vue';
+import { ref, onMounted, onBeforeMount, reactive } from 'vue';
 import axios from 'axios';
 
-const students = ref([]);
-const api = 'http://127.0.0.1:8000/api';
 
-const student = ref({
+
+// const student = ref({
+//   nom: '',
+//   cours: '',
+//   email: '',
+//   genre: ''
+// });
+
+const defaultStudent = {
   nom: '',
   cours: '',
   email: '',
-  genre: ''
-});
+  genre: '',
+  // ... d'autres champs
+};
+
+// Créez une référence réactive avec les valeurs par défaut
+const student = ref(reactive({ ...defaultStudent }));
+
+// ref == l'equivalent de useState dans react
+const students = ref([]);
+const api = 'http://127.0.0.1:8000/api';
+
+const currentStudent = ref({});
 
 const getStudents = () => {
   console.log("Liste des étudiants");
-  axios.get(api + '/students', { params: student.value })
+  axios.get(api + '/students/')
     .then(
       response => {
         console.log(response.data);
@@ -183,6 +203,20 @@ const getStudents = () => {
       console.log(error);
     })
 };
+
+const saveStudent = () => {
+  axios.post(api + '/students/', student.value)
+    .then(
+      response => {
+        console.log(response.data);
+        getStudents()
+        // Réinitialisez tous les champs de l'objet student
+        student.value = { ...defaultStudent };
+      }
+    ).catch(error => {
+      console.log(error);
+    })
+}
 
 onMounted(() => {
   console.log("Le DOM est monté");
