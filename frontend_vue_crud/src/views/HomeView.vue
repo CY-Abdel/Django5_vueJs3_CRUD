@@ -11,10 +11,10 @@ import HelloWorld from '../components/HelloWorld.vue';
 
 <style scoped>
 .home {
-  min-height: 100vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: start;
-  justify-content: space-evenly;
+  justify-content: start;
 }
 </style>

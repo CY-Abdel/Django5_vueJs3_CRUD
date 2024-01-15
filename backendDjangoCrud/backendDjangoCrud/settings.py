@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'django-insecure-8%dgm$#wws8&&-9tm%z(zl!njt&y)*9w-o%+e#dvs78wpq$+v7
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -76,7 +74,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backendDjangoCrud.wsgi.application'
 
-CROSS_ORIGIN_ALLOW_ALL = True
+
+# Si vous êtes en mode debug, autorisez toutes les origines
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    # Sinon, autorisez uniquement http://localhost:5173
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+    ]
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -87,7 +93,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -107,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -118,7 +122,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

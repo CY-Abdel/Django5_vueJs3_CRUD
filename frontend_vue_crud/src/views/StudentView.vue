@@ -1,7 +1,7 @@
 <template>
-  <div class="app container-fluid">
+  <div class="app container-fluid pt-2">
 
-    <h2 class="alert alert-warning mt-2">Django5 & Vue.JS3 & Bootstrap => CRUD Application</h2>
+    <h2 class="alert alert-warning">Django5 & Vue.JS3 & Bootstrap => CRUD Application</h2>
 
     <div class="row">
       <div class="col-md-7">
@@ -18,11 +18,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+            <tr v-for="student in students" :key="student.id" >
+              <td>{{ student.nom }}</td>
+              <td>{{ student.cours }}</td>
+              <td>{{ student.email }}</td>
+              <td>{{ student.genre }}</td>
               <td>
                 <a href="#" class="edit" title="">
                   <button class="btn btn-warning btn-sm me-2">Edit</button>
@@ -34,12 +34,11 @@
             </tr>
           </tbody>
         </table>
-
       </div>
 
       <div class="col-md-5 addEdit">
         <!-- There is a current student to be edited -->
-        <div class="">
+        <div >
           <h2 class="alert alert-warning">Editer un Etudiant</h2>
           <form>
             <div class="row">
@@ -116,15 +115,83 @@
             <button type="submit" class="btn btn-success col-md-4 float-start mt-3">Ajouter</button>
           </form>
         </div>
-
       </div>
 
     </div>
   </div>
 </template>
 
+<!-- <script>
+import axios from 'axios';
+
+
+export default {
+  data() {
+    return {
+      'api': 'http://127.0.0.1:8000/api/',
+      'student': {
+        'nom': '',
+        'cours': '',
+        'email': '',
+        'genre': ''
+      },
+    }
+  },
+
+  mounted() {
+    console.log("Dom mounted");
+  },
+
+  created() {
+    console.log("Dom created"); // Dom will be created befor mounted
+    this.getStudents()
+  },
+
+  methods: {
+    getStudents() {
+      console.log("listes etudiants");
+    }
+  }
+}
+
+</script> -->
+
+// version vueJS 3.2 et +
 <script setup>
-console.log("vue js");
+import { ref, onMounted, onBeforeMount } from 'vue';
+import axios from 'axios';
+
+const students = ref([]);
+const api = 'http://127.0.0.1:8000/api';
+
+const student = ref({
+  nom: '',
+  cours: '',
+  email: '',
+  genre: ''
+});
+
+const getStudents = () => {
+  console.log("Liste des étudiants");
+  axios.get(api + '/students', { params: student.value })
+    .then(
+      response => {
+        console.log(response.data);
+        students.value = response.data;
+      }
+    ).catch(error => {
+      console.log(error);
+    })
+};
+
+onMounted(() => {
+  console.log("Le DOM est monté");
+});
+
+onBeforeMount(() => {
+  console.log("Le DOM est créé avant le montage");
+  getStudents();
+});
 </script>
 
 <style scoped>
